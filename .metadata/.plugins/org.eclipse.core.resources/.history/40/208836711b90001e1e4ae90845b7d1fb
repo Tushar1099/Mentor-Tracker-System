@@ -1,0 +1,63 @@
+package com.example.courseservice.serviceImpl;
+
+import static org.mockito.Mockito.when;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.modelmapper.ModelMapper;
+
+import com.example.courseservice.dto.CourseDto;
+import com.example.courseservice.entity.Course;
+import com.example.courseservice.repository.CourseRepository;
+import com.example.courseservice.service.serviceImpl.CourseServiceImpl;
+import com.google.common.base.Optional;
+ 
+// Assuming necessary imports for Mockito, JUnit, and other required libraries
+ 
+public class CourseServiceImplTest {
+ 
+    @Mock
+    private CourseRepository courseRepository;
+ 
+    @Mock
+    private ModelMapper modelMapper;
+ 
+    @InjectMocks
+    private CourseServiceImpl courseService;
+ 
+    @BeforeEach
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
+ 
+    @Test
+    public void testCreateCourse() {
+        CourseDto inputDto = new CourseDto(/* provide necessary parameters */);
+        Course course = new Course(/* create a Course object based on inputDto */);
+        when(modelMapper.map(inputDto, Course.class)).thenReturn(course);
+        when(courseRepository.save(course)).thenReturn(course);
+ 
+        CourseDto createdCourseDto = courseService.createCourse(inputDto);
+ 
+        assertNotNull(createdCourseDto);
+        // Add assertions based on expected behavior after creating a course
+    }
+ 
+    @Test
+    public void testGetCourseById() {
+        int courseId = 1; // Assuming a course with ID 1 exists
+        Course course = new Course(/* create a Course object with courseId */);
+        when(courseRepository.findById(courseId)).thenReturn(Optional.of(course));
+        when(modelMapper.map(course, CourseDto.class)).thenReturn(new CourseDto(/* create a CourseDto object based on the Course */));
+ 
+        CourseDto retrievedCourse = courseService.getCourseById(courseId);
+ 
+        assertNotNull(retrievedCourse);
+        // Add assertions based on expected behavior after getting a course by ID
+    }
+ 
+    // Similarly, write test methods for getAllCourses, updateCourse, and deleteCourse methods
+}

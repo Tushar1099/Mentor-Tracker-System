@@ -1,0 +1,61 @@
+package com.example.courseservice.serviceImpl;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.when;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.modelmapper.ModelMapper;
+
+import com.example.courseservice.dto.CourseDto;
+import com.example.courseservice.entity.Course;
+import com.example.courseservice.repository.CourseRepository;
+import com.example.courseservice.service.serviceImpl.CourseServiceImpl;
+import com.google.common.base.Optional;
+ 
+ 
+public class CourseServiceImplTest {
+ 
+    @Mock
+    private CourseRepository courseRepository;
+ 
+    @Mock
+    private ModelMapper modelMapper;
+ 
+    @InjectMocks
+    private CourseServiceImpl courseService;
+ 
+    @BeforeEach
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
+ 
+    @Test
+    public void testCreateCourse() {
+        CourseDto inputDto = new CourseDto();
+        Course course = new Course();
+        when(modelMapper.map(inputDto, Course.class)).thenReturn(course);
+        when(courseRepository.save(course)).thenReturn(course);
+ 
+        CourseDto createdCourseDto = courseService.createCourse(inputDto);
+ 
+        assertNotNull(createdCourseDto);
+    }
+ 
+    @Test
+    public void testGetCourseById() {
+        int courseId = 1; 
+        Course course = new Course();
+        when(courseRepository.findById(courseId)).thenReturn(Optional.of(course));
+        when(modelMapper.map(course, CourseDto.class)).thenReturn(new CourseDto(/* create a CourseDto object based on the Course */));
+ 
+        CourseDto retrievedCourse = courseService.getCourseById(courseId);
+ 
+        assertNotNull(retrievedCourse);
+    }
+ 
+
+}

@@ -1,0 +1,19 @@
+package com.example.courseservice.service;
+
+import java.util.List;
+
+import com.example.courseservice.dto.CourseDtoTest;
+
+public interface CourseService {
+	
+
+	CourseDtoTest createCourse(CourseDtoTest course);
+	
+	CourseDtoTest getCourseById(int courseId);
+	
+	List<CourseDtoTest> getAllCourses();
+	
+	CourseDtoTest updateCourse(CourseDtoTest course);
+	
+	void deleteCourse(int courseId);
+}

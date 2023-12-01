@@ -1,0 +1,179 @@
+package com.example.courseservice.serviceImpl;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.atLeast;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import com.example.courseservice.dto.CourseDto;
+import com.example.courseservice.entity.Course;
+import com.example.courseservice.exception.ResourceNotFoundException;
+import com.example.courseservice.repository.CourseRepository;
+import com.example.courseservice.service.serviceImpl.CourseServiceImpl;
+
+import java.time.LocalTime;
+
+import java.util.ArrayList;
+
+import java.util.Optional;
+
+import org.junit.jupiter.api.Disabled;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+@ContextConfiguration(classes = {CourseServiceImpl.class})
+@ExtendWith(SpringExtension.class)
+class CourseServiceImplTest {
+    @MockBean
+    private CourseRepository courseRepository;
+
+    @Autowired
+    private CourseServiceImpl courseServiceImpl;
+
+    @MockBean
+    private ModelMapper modelMapper;
+
+    @Test
+    void testCreateCourse() {
+        when(courseRepository.save(Mockito.<Course>any())).thenReturn(new Course());
+        when(modelMapper.map(Mockito.<Object>any(), Mockito.<Class<Object>>any()))
+                .thenThrow(new ResourceNotFoundException("Resource Name", "Field Name", 1));
+        assertThrows(ResourceNotFoundException.class, () -> courseServiceImpl.createCourse(new CourseDto()));
+        verify(modelMapper).map(Mockito.<Object>any(), Mockito.<Class<Course>>any());
+    }
+
+    @Test
+    void testCreateCourse2() {
+        when(courseRepository.save(Mockito.<Course>any())).thenReturn(new Course());
+        when(modelMapper.map(Mockito.<Object>any(), Mockito.<Class<Object>>any())).thenReturn(null);
+        assertNull(courseServiceImpl.createCourse(new CourseDto()));
+        verify(courseRepository).save(Mockito.<Course>any());
+        verify(modelMapper, atLeast(1)).map(Mockito.<Object>any(), Mockito.<Class<Object>>any());
+    }
+
+    @Test
+    void testGetCourseById() {
+        when(courseRepository.findById(Mockito.<Integer>any())).thenReturn(Optional.of(new Course()));
+        CourseDto courseDto = new CourseDto();
+        when(modelMapper.map(Mockito.<Object>any(), Mockito.<Class<CourseDto>>any())).thenReturn(courseDto);
+        assertSame(courseDto, courseServiceImpl.getCourseById(1));
+        verify(courseRepository).findById(Mockito.<Integer>any());
+        verify(modelMapper).map(Mockito.<Object>any(), Mockito.<Class<CourseDto>>any());
+    }
+
+
+    @Test
+    void testGetAllCourses() {
+        when(courseRepository.findAll()).thenReturn(new ArrayList<>());
+        assertTrue(courseServiceImpl.getAllCourses().isEmpty());
+        verify(courseRepository).findAll();
+    }
+
+  
+    @Test
+    void testGetAllCourses2() {
+        ArrayList<Course> courseList = new ArrayList<>();
+        courseList.add(new Course());
+        when(courseRepository.findAll()).thenReturn(courseList);
+        when(modelMapper.map(Mockito.<Object>any(), Mockito.<Class<CourseDto>>any())).thenReturn(new CourseDto());
+        assertEquals(1, courseServiceImpl.getAllCourses().size());
+        verify(courseRepository).findAll();
+        verify(modelMapper).map(Mockito.<Object>any(), Mockito.<Class<CourseDto>>any());
+    }
+
+
+    @Test
+    void testGetAllCourses3() {
+        ArrayList<Course> courseList = new ArrayList<>();
+        courseList.add(new Course());
+        courseList.add(new Course());
+        when(courseRepository.findAll()).thenReturn(courseList);
+        when(modelMapper.map(Mockito.<Object>any(), Mockito.<Class<CourseDto>>any())).thenReturn(new CourseDto());
+        assertEquals(2, courseServiceImpl.getAllCourses().size());
+        verify(courseRepository).findAll();
+        verify(modelMapper, atLeast(1)).map(Mockito.<Object>any(), Mockito.<Class<CourseDto>>any());
+    }
+
+ 
+    @Test
+    void testGetAllCourses4() {
+        ArrayList<Course> courseList = new ArrayList<>();
+        courseList.add(new Course());
+        when(courseRepository.findAll()).thenReturn(courseList);
+        when(modelMapper.map(Mockito.<Object>any(), Mockito.<Class<CourseDto>>any()))
+                .thenThrow(new ResourceNotFoundException("Resource Name", "Field Name", 1));
+        assertThrows(ResourceNotFoundException.class, () -> courseServiceImpl.getAllCourses());
+        verify(courseRepository).findAll();
+        verify(modelMapper).map(Mockito.<Object>any(), Mockito.<Class<CourseDto>>any());
+    }
+
+
+    @Test
+    void testUpdateCourse() {
+        when(courseRepository.save(Mockito.<Course>any())).thenReturn(new Course());
+        when(courseRepository.findById(Mockito.<Integer>any())).thenReturn(Optional.of(new Course()));
+        CourseDto courseDto = new CourseDto();
+        when(modelMapper.map(Mockito.<Object>any(), Mockito.<Class<CourseDto>>any())).thenReturn(courseDto);
+        assertSame(courseDto, courseServiceImpl.updateCourse(new CourseDto()));
+        verify(courseRepository).save(Mockito.<Course>any());
+        verify(courseRepository).findById(Mockito.<Integer>any());
+        verify(modelMapper).map(Mockito.<Object>any(), Mockito.<Class<CourseDto>>any());
+    }
+
+
+    @Test
+    void testUpdateCourse2() {
+        when(courseRepository.save(Mockito.<Course>any())).thenReturn(new Course());
+        when(courseRepository.findById(Mockito.<Integer>any())).thenReturn(Optional.of(new Course()));
+        when(modelMapper.map(Mockito.<Object>any(), Mockito.<Class<CourseDto>>any()))
+                .thenThrow(new ResourceNotFoundException("Resource Name", "Field Name", 1));
+        assertThrows(ResourceNotFoundException.class, () -> courseServiceImpl.updateCourse(new CourseDto()));
+        verify(courseRepository).save(Mockito.<Course>any());
+        verify(courseRepository).findById(Mockito.<Integer>any());
+        verify(modelMapper).map(Mockito.<Object>any(), Mockito.<Class<CourseDto>>any());
+    }
+
+    @Test
+    void testDeleteCourse() {
+        doNothing().when(courseRepository).deleteById(Mockito.<Integer>any());
+        when(courseRepository.findById(Mockito.<Integer>any())).thenReturn(Optional.of(new Course()));
+        courseServiceImpl.deleteCourse(1);
+        verify(courseRepository).findById(Mockito.<Integer>any());
+        verify(courseRepository).deleteById(Mockito.<Integer>any());
+        assertTrue(courseServiceImpl.getAllCourses().isEmpty());
+    }
+
+
+    @Test
+    void testDeleteCourse2() {
+        doThrow(new ResourceNotFoundException("Resource Name", "Field Name", 1)).when(courseRepository)
+                .deleteById(Mockito.<Integer>any());
+        when(courseRepository.findById(Mockito.<Integer>any())).thenReturn(Optional.of(new Course()));
+        assertThrows(ResourceNotFoundException.class, () -> courseServiceImpl.deleteCourse(1));
+        verify(courseRepository).findById(Mockito.<Integer>any());
+        verify(courseRepository).deleteById(Mockito.<Integer>any());
+    }
+
+
+    @Test
+    void testDeleteCourse3() {
+        doNothing().when(courseRepository).deleteById(Mockito.<Integer>any());
+        when(courseRepository.findById(Mockito.<Integer>any())).thenReturn(Optional.empty());
+        assertThrows(ResourceNotFoundException.class, () -> courseServiceImpl.deleteCourse(1));
+        verify(courseRepository).findById(Mockito.<Integer>any());
+    }
+}
