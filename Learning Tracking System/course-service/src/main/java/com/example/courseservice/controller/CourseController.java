@@ -33,21 +33,21 @@ public class CourseController {
 
 	@PostMapping("/add")
 	public ResponseEntity<CourseDto> createCourse(@RequestBody CourseDto course){
-		LOGGER.info("Inside CourseController of createCourse");
+		LOGGER.info("Inside CourseController - createCourse");
 		CourseDto savedCourse = courseService.createCourse(course);
 		return new ResponseEntity<>(savedCourse, HttpStatus.CREATED);
 	}
 	
 	@GetMapping("/get/{courseId}")
 	public ResponseEntity<CourseDto> getUserById(@PathVariable int courseId){
-		LOGGER.info("Inside CourseController of getUserById");
+		LOGGER.info("Inside CourseController - getUserById");
 		CourseDto user = courseService.getCourseById(courseId);
 		return new ResponseEntity<>(user, HttpStatus.OK);
 	}
 	
 	@GetMapping("/all")
 	public ResponseEntity<List<CourseDto>> getAllCourses(){
-		LOGGER.info("Inside CourseController of getAllCourses");
+		LOGGER.info("Inside CourseController - getAllCourses");
 		List<CourseDto> users = courseService.getAllCourses();
 		return new ResponseEntity<>(users, HttpStatus.OK);
 	}
@@ -55,7 +55,7 @@ public class CourseController {
 	@PutMapping("/update/{courseId}")
 	public ResponseEntity<CourseDto> updateUser(@PathVariable int courseId, 
 												 @RequestBody CourseDto course){
-		LOGGER.info("Inside CourseController of updateCourse");
+		LOGGER.info("Inside CourseController - updateCourse");
 		course.setCourseId(courseId);
 		CourseDto updatedUser  = courseService.updateCourse(course);
 		return new ResponseEntity<>(updatedUser, HttpStatus.OK);
@@ -63,7 +63,7 @@ public class CourseController {
 	
 	@DeleteMapping("/delete/{courseId}")
 	public ResponseEntity<String> deleteUser(@PathVariable int courseId){
-		LOGGER.info("Inside CourseController of deleteCourse");
+		LOGGER.info("Inside CourseController - deleteCourse");
 		courseService.deleteCourse(courseId);
 		return new ResponseEntity<>("Course Deleted Successfully",HttpStatus.OK);
 	}

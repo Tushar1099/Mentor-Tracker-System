@@ -30,6 +30,8 @@ public class Course {
 	
 	@Column(nullable= false)
 	private String courseName;
+	
+	
 	private LocalTime courseTime;
 	
 }

@@ -30,7 +30,7 @@ public class CourseServiceImpl implements CourseService {
 	
 	@Override
 	public CourseDto createCourse(CourseDto courseDto) {
-		LOGGER.info("Inside CourseServiceImpl of createCourse");
+		LOGGER.info("Inside CourseServiceImpl - createCourse");
 		Course course = modelMapper.map(courseDto, Course.class);
 		Course createdCourse = courseRepository.save(course);
         return modelMapper.map(createdCourse, CourseDto.class);
@@ -38,7 +38,7 @@ public class CourseServiceImpl implements CourseService {
 
 	@Override
 	public CourseDto getCourseById(int courseId) {
-		LOGGER.info("Inside CourseServiceImpl of getCourseById");
+		LOGGER.info("Inside CourseServiceImpl - getCourseById");
 		
 		Optional<Course> courseOptional = courseRepository.findById(courseId);
         
@@ -52,7 +52,7 @@ public class CourseServiceImpl implements CourseService {
 
 	@Override
 	public List<CourseDto> getAllCourses() {
-		LOGGER.info("Inside CourseServiceImpl of getAllCourse");
+		LOGGER.info("Inside CourseServiceImpl - getAllCourse");
 		
 		List<Course> courses = courseRepository.findAll();
         return courses.stream()
@@ -62,7 +62,7 @@ public class CourseServiceImpl implements CourseService {
 
 	@Override
 	public CourseDto updateCourse(CourseDto course) {
-		LOGGER.info("Inside CourseServiceImpl of updateCourse");
+		LOGGER.info("Inside CourseServiceImpl - updateCourse");
 		
 		 Optional<Course> courseOptional = courseRepository.findById(course.getCourseId());
 	        
@@ -80,7 +80,7 @@ public class CourseServiceImpl implements CourseService {
 
 	@Override
 	public void deleteCourse(int courseId) {
-		LOGGER.info("Inside CourseServiceImpl of deleteCourse");
+		LOGGER.info("Inside CourseServiceImpl - deleteCourse");
 		courseRepository.findById(courseId).orElseThrow(
                 () -> new ResourceNotFoundException("Course", "id", courseId));
 		courseRepository.deleteById(courseId);
